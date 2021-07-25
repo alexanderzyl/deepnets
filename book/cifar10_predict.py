@@ -13,7 +13,7 @@ print("Preparing Data...")
 (_, (testX, testY)) = cifar10.load_data()
 testX = testX.astype('float') / 255.
 
-np.random.seed(101)
+np.random.seed(109)
 idx = np.random.choice(testX.shape[0], 32)
 
 randomX = np.take(testX, idx, axis=0)

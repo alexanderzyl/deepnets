@@ -8,6 +8,10 @@ def _create_net(height, width, depth, classes):
     input_shape = (height, width, depth)
     model.add(Conv2D(32, (3, 3), padding='same', input_shape=input_shape))
     model.add(Activation('relu'))
+
+    model.add(Conv2D(64, (1, 1), padding='same'))
+    model.add(Activation('relu'))
+
     model.add(Flatten())
     model.add(Dense(classes))
     model.add(Activation("softmax"))
