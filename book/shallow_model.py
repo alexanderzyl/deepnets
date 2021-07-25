@@ -31,7 +31,7 @@ class ShallowModel:
 
     def load_model(self):
         from keras.models import load_model as _load
-        return _load(self.model_path)
+        self._net = _load(self.model_path)
 
     def save_model(self):
         self._net.save(self.model_path)
