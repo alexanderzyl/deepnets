@@ -2,10 +2,8 @@ from keras.layers import Conv2D, Activation, Flatten, Dense
 from keras.models import Sequential
 from keras.optimizer_v2.gradient_descent import SGD
 
-MODELS_SHALLOW_PATH = '/Users/aliaksandrzyl/Desktop/models/shallow'
 
-
-def create_net(height, width, depth, classes):
+def _create_net(height, width, depth, classes):
     model = Sequential()
     input_shape = (height, width, depth)
     model.add(Conv2D(32, (3, 3), padding='same', input_shape=input_shape))
@@ -16,14 +14,24 @@ def create_net(height, width, depth, classes):
     return model
 
 
-def create_model(num_classes):
-    print("Compiling model...")
-    opt = SGD(learning_rate=0.01)
-    model = create_net(width=32, height=32, depth=3, classes=num_classes)
-    model.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
-    return model
+class ShallowModel:
+    def __init__(self):
+        self._net = None
+        self.model_path = '/Users/aliaksandrzyl/Desktop/models/shallow'
 
+    def create_model(self, num_classes):
+        print("Compiling model...")
+        opt = SGD(learning_rate=0.01)
+        self._net = _create_net(width=32, height=32, depth=3, classes=num_classes)
+        self._net.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
 
-def load_model(_):
-    from keras.models import load_model as _load
-    return _load(MODELS_SHALLOW_PATH)
+    @property
+    def net(self):
+        return self._net
+
+    def load_model(self):
+        from keras.models import load_model as _load
+        return _load(self.model_path)
+
+    def save_model(self):
+        self._net.save(self.model_path)
