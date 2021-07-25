@@ -2,7 +2,7 @@ from keras.datasets import cifar10
 import numpy as np
 import cv2
 
-from book.shallow_model import ShallowModel
+from book.models.shallow_model import ShallowModel
 
 print("Loading model...")
 model = ShallowModel()

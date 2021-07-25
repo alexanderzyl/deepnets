@@ -4,7 +4,7 @@ from sklearn.preprocessing import LabelBinarizer
 
 from book.plot import plot_history
 
-from book.shallow_model import ShallowModel
+from book.models.shallow_model import ShallowModel
 
 print("Preparing Data...")
 ((trainX, trainY), (testX, testY)) = cifar10.load_data()
