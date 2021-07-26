@@ -5,6 +5,7 @@ from sklearn.preprocessing import LabelBinarizer
 from book.plot import plot_history
 
 from book.models.shallow_model import ShallowModel
+from book.models.minivgg import MiniVGG
 
 print("Preparing Data...")
 ((trainX, trainY), (testX, testY)) = cifar10.load_data()
@@ -17,11 +18,12 @@ testY = lb.transform(testY)
 
 label_names = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog', 'horse', 'ship', 'truck']
 
-model = ShallowModel()
+# model = ShallowModel()
+model = MiniVGG()
 model.create_model(len(label_names))
 
 print("Training...")
-epochs = 20
+epochs = 40
 H = model.net.fit(trainX, trainY, validation_data=(testX, testY), batch_size=32, epochs=epochs, verbose=1)
 model.save_model()
 
