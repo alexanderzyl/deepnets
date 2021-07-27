@@ -41,8 +41,9 @@ class MiniVGG(AnyModel):
     def __init__(self):
         super().__init__('/Users/aliaksandrzyl/Desktop/models/minivgg')
 
-    def create_model(self, num_classes):
+    def create_model(self, num_classes, epochs=40):
         print("Compiling model...")
-        opt = SGD(learning_rate=0.01)
+        lr = 0.01
+        opt = SGD(learning_rate=lr, decay=lr/float(epochs), momentum=0.9, nesterov=True)
         self._net = _create_net(width=32, height=32, depth=3, classes=num_classes)
         self._net.compile(loss='categorical_crossentropy', optimizer=opt, metrics=['accuracy'])
