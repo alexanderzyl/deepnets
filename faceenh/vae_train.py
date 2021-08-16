@@ -3,6 +3,8 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 
+from keras.utils.vis_utils import plot_model
+
 
 # https://keras.io/examples/generative/vae/
 
@@ -90,4 +92,9 @@ mnist_digits = np.expand_dims(mnist_digits, -1).astype("float32") / 255
 
 vae = VAE(encoder, decoder)
 vae.compile(optimizer=keras.optimizers.Adam())
-vae.fit(mnist_digits, epochs=30, batch_size=128)
+
+# plot_model(vae, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
+
+# vae.fit(mnist_digits, epochs=30, batch_size=128)
+#
+# vae.save("/Users/aliaksandrzyl/Desktop/models/vae")
