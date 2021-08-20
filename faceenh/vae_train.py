@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
@@ -7,6 +9,11 @@ from keras.utils.vis_utils import plot_model
 
 
 # https://keras.io/examples/generative/vae/
+# https://medium.com/@taylordenouden/installing-tensorflow-gpu-on-ubuntu-18-04-89a142325138
+# https://www.tensorflow.org/install/source#gpu
+
+# cudnn_version=8.1.*.*
+# cuda_version=cuda11.2
 
 class Sampling(layers.Layer):
     """Uses (z_mean, z_log_var) to sample z, the vector encoding a digit."""
@@ -85,6 +92,10 @@ class VAE(keras.Model):
             "kl_loss": self.kl_loss_tracker.result(),
         }
 
+    def save(self, path):
+        self.encoder.save(os.path.join(path, 'encoder'))
+        self.decoder.save(os.path.join(path, 'decoder'))
+
 
 (x_train, _), (x_test, _) = keras.datasets.mnist.load_data()
 mnist_digits = np.concatenate([x_train, x_test], axis=0)
@@ -95,6 +106,5 @@ vae.compile(optimizer=keras.optimizers.Adam())
 
 # plot_model(vae, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
-# vae.fit(mnist_digits, epochs=30, batch_size=128)
-#
-# vae.save("/Users/aliaksandrzyl/Desktop/models/vae")
+vae.fit(mnist_digits, epochs=1, batch_size=128)
+vae.save('/Users/aliaksandrzyl/Desktop/models/vae')
