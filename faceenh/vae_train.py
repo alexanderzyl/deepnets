@@ -12,8 +12,9 @@ from keras.utils.vis_utils import plot_model
 # https://medium.com/@taylordenouden/installing-tensorflow-gpu-on-ubuntu-18-04-89a142325138
 # https://www.tensorflow.org/install/source#gpu
 
-# cudnn_version=8.1.*.*
+# cudnn_version=8.2.2.*
 # cuda_version=cuda11.2
+# OS=ubuntu1804
 
 class Sampling(layers.Layer):
     """Uses (z_mean, z_log_var) to sample z, the vector encoding a digit."""
@@ -51,6 +52,8 @@ decoder = keras.Model(latent_inputs, decoder_outputs, name="decoder")
 # decoder.summary()
 
 class VAE(keras.Model):
+    model_path = os.environ['MODEL_PATH']
+
     def __init__(self, encoder, decoder, **kwargs):
         super(VAE, self).__init__(**kwargs)
         self.encoder = encoder
@@ -60,6 +63,13 @@ class VAE(keras.Model):
             name="reconstruction_loss"
         )
         self.kl_loss_tracker = keras.metrics.Mean(name="kl_loss")
+        print('Model path: {}'.format(self.model_path))
+
+    @staticmethod
+    def load():
+        enc = keras.models.load_model(VAE.encoder_path())
+        dec = keras.models.load_model(VAE.decoder_path())
+        return VAE(enc, dec)
 
     @property
     def metrics(self):
@@ -92,9 +102,17 @@ class VAE(keras.Model):
             "kl_loss": self.kl_loss_tracker.result(),
         }
 
-    def save(self, path):
-        self.encoder.save(os.path.join(path, 'encoder'))
-        self.decoder.save(os.path.join(path, 'decoder'))
+    def save(self):
+        self.encoder.save(self.encoder_path())
+        self.decoder.save(self.decoder_path())
+
+    @staticmethod
+    def encoder_path():
+        return os.path.join(VAE.model_path, 'encoder')
+
+    @staticmethod
+    def decoder_path():
+        return os.path.join(VAE.model_path, 'decoder')
 
 
 (x_train, _), (x_test, _) = keras.datasets.mnist.load_data()
@@ -102,9 +120,10 @@ mnist_digits = np.concatenate([x_train, x_test], axis=0)
 mnist_digits = np.expand_dims(mnist_digits, -1).astype("float32") / 255
 
 vae = VAE(encoder, decoder)
+# vae = VAE.load()
 vae.compile(optimizer=keras.optimizers.Adam())
 
 # plot_model(vae, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
 vae.fit(mnist_digits, epochs=1, batch_size=128)
-vae.save('/Users/aliaksandrzyl/Desktop/models/vae')
+vae.save()
