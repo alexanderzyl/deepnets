@@ -125,5 +125,5 @@ vae.compile(optimizer=keras.optimizers.Adam())
 
 # plot_model(vae, to_file='model_plot.png', show_shapes=True, show_layer_names=True)
 
-vae.fit(mnist_digits, epochs=1, batch_size=128)
+vae.fit(mnist_digits, epochs=32, batch_size=128)
 vae.save()
